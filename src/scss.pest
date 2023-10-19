@@ -1,3 +1,17 @@
-char = { ASCII_ALPHANUMERIC | "_" | "-" }
-class = {"." ~ char+}
+char = {
+    ASCII_ALPHANUMERIC | "_" | "-"
+}
+class = {
+    "." ~ char+
+}
+id = {
+    "#" ~ char+
+}
+identifier = {
+    char+
+}
+selector_part = {
+    id | class | identifier
+}
+
 WHITESPACE = _{ " "|"\t" }
