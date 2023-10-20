@@ -2,16 +2,19 @@ char = {
     ASCII_ALPHANUMERIC | "_" | "-"
 }
 class = {
-    "." ~ char+
+    "." ~ (ASCII_ALPHA | "_") ~ char*
 }
 id = {
-    "#" ~ char+
+    "#" ~ (ASCII_ALPHA | "_") ~ char*
 }
 identifier = {
-    char+
+    (ASCII_ALPHA | "_") ~ char*
 }
 selector_part = {
     id | class | identifier
 }
+selector = {
+    selector_part ~ (selector_separator ~ selector_part)*
+}
 
-WHITESPACE = _{ " "|"\t" }
+selector_separator = _{ " " | "\t" | NEWLINE }

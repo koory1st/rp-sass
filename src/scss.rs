@@ -47,3 +47,27 @@ fn test_selector_part() {
   assert_eq!(Rule::selector_part, ScssParser::parse(Rule::selector_part, ".abc-a_ad").unwrap().next().unwrap().as_rule());
   assert_eq!(Rule::selector_part, ScssParser::parse(Rule::selector_part, "abc-a_ad").unwrap().next().unwrap().as_rule());
 }
+
+#[test]
+fn test_selector() {
+  assert!(ScssParser::parse(Rule::selector, "").is_err());
+  assert!(ScssParser::parse(Rule::selector, "#").is_err());
+  assert!(ScssParser::parse(Rule::selector, ".").is_err());
+
+  assert_eq!(Rule::selector, ScssParser::parse(Rule::selector, "#abc-a_ad").unwrap().next().unwrap().as_rule());
+  assert_eq!(Rule::selector, ScssParser::parse(Rule::selector, ".abc-a_ad").unwrap().next().unwrap().as_rule());
+  assert_eq!(Rule::selector, ScssParser::parse(Rule::selector, "abc-a_ad").unwrap().next().unwrap().as_rule());
+  let mut result = ScssParser::parse(Rule::selector, "#abc-a_ad .abc-a_ad\tabc-a_ad\r\n.a").unwrap().next().unwrap().into_inner();
+  let pair = result.next().unwrap();
+  assert_eq!(Rule::selector_part, pair.as_rule());
+  assert_eq!("#abc-a_ad", pair.as_str());
+  let pair = result.next().unwrap();
+  assert_eq!(Rule::selector_part, pair.as_rule());
+  assert_eq!(".abc-a_ad", pair.as_str());
+  let pair = result.next().unwrap();
+  assert_eq!(Rule::selector_part, pair.as_rule());
+  assert_eq!("abc-a_ad", pair.as_str());
+  let pair = result.next().unwrap();
+  assert_eq!(Rule::selector_part, pair.as_rule());
+  assert_eq!(".a", pair.as_str());
+}
