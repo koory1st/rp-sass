@@ -1,20 +1,29 @@
-char = {
+char = _{
     ASCII_ALPHANUMERIC | "_" | "-"
 }
-class = {
+class = @{
     "." ~ (ASCII_ALPHA | "_") ~ char*
 }
-id = {
+id = @{
     "#" ~ (ASCII_ALPHA | "_") ~ char*
 }
-identifier = {
+identifier = @{
     (ASCII_ALPHA | "_") ~ char*
 }
 selector_part = {
     id | class | identifier
 }
 selector = {
-    selector_part ~ (selector_separator ~ selector_part)*
+    selector_part+
+}
+property = {identifier}
+variable_name = {ASCII_ALPHA_LOWER ~ (ASCII_ALPHANUMERIC | "-")* }
+string = ${ "\"" ~ inner ~ "\"" }
+inner = @{ char_s* }
+char_s = _{
+    !("\"" | "\\") ~ ANY
+    | "\\" ~ ("\"" | "\\" | "/" | "b" | "f" | "n" | "r" | "t")
+    | "\\" ~ ("u" ~ ASCII_HEX_DIGIT{4})
 }
 
-selector_separator = _{ " " | "\t" | NEWLINE }
+WHITESPACE = _{ " " | "\t" | "\r" | "\n" }
