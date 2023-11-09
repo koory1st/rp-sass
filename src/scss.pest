@@ -26,4 +26,17 @@ char_s = _{
     | "\\" ~ ("u" ~ ASCII_HEX_DIGIT{4})
 }
 
+// literal number
+literal_unit_length = @{"px" | "in"}
+literal_unit_period = @{"s"}
+literal_unit = @{ literal_unit_length | literal_unit_period }
+literal_number_minus_sign = @{"-"}
+literal_number_integer = @{literal_number_minus_sign? ~ ASCII_DIGIT+}
+literal_number_decimal_no_int = @{"." ~ ASCII_DIGIT+}
+literal_number_decimal = ${ literal_number_minus_sign? ~ (ASCII_DIGIT+ ~ "." ~ ASCII_DIGIT+ | literal_number_decimal_no_int) }
+literal_number_scientific = ${ literal_number_decimal ~ "e" ~ literal_number_integer }
+literal_number_no_unit = ${literal_number_decimal | literal_number_integer | literal_number_scientific }
+literal_number_with_unit = ${literal_number_no_unit ~ literal_unit}
+literal_number = ${ literal_number_with_unit | literal_number_no_unit}
+
 WHITESPACE = _{ " " | "\t" | "\r" | "\n" }
