@@ -1,30 +1,9 @@
-char = _{
-    ASCII_ALPHANUMERIC | "_" | "-"
-}
-class = @{
-    "." ~ (ASCII_ALPHA | "_") ~ char*
-}
-id = @{
-    "#" ~ (ASCII_ALPHA | "_") ~ char*
-}
-identifier = @{
-    (ASCII_ALPHA | "_") ~ char*
-}
-selector_part = {
-    id | class | identifier
-}
-selector = {
-    selector_part+
-}
-property = {identifier}
-variable_name = {ASCII_ALPHA_LOWER ~ (ASCII_ALPHANUMERIC | "-")* }
-string = ${ "\"" ~ inner ~ "\"" }
-inner = @{ char_s* }
-char_s = _{
-    !("\"" | "\\") ~ ANY
-    | "\\" ~ ("\"" | "\\" | "/" | "b" | "f" | "n" | "r" | "t")
-    | "\\" ~ ("u" ~ ASCII_HEX_DIGIT{4})
-}
+// ASCII_HEX_DIGIT: '0'..'9' | 'a'..'f' | 'A'..'F'
+// ASCII_ALPHA_LOWER: 'a'..'z'
+// ASCII_ALPHA: 'a'..'z' | 'A'..'Z'
+// ASCII_ALPHANUMERIC: ASCII_DIGIT | ASCII_ALPHA
+
+WHITESPACE = _{ " " | "\t" | "\r" | "\n" }
 
 // literal number
 literal_unit_length = @{"px" | "in"}
@@ -39,4 +18,26 @@ literal_number_no_unit = ${literal_number_decimal | literal_number_integer | lit
 literal_number_with_unit = ${literal_number_no_unit ~ literal_unit}
 literal_number = ${ literal_number_with_unit | literal_number_no_unit}
 
-WHITESPACE = _{ " " | "\t" | "\r" | "\n" }
+// literal boolean
+literal_boolean = @{ "true" | "false" }
+literal_null = @{"null"}
+
+// literal string
+literal_string_escape_lower = @{"\\" ~ ASCII_ALPHA_LOWER}
+literal_string_escape_unicode = @{"\\" ~ ASCII_HEX_DIGIT+}
+literal_string_escape = ${ literal_string_escape_unicode | literal_string_escape_lower }
+literal_string_char_unit = ${ HAN | HIRAGANA | KATAKANA | HANGUL | BOPOMOFO | ASCII_ALPHANUMERIC }
+literal_string_char_quote_single = @{ "'" }
+literal_string_char_quote_double = @{ "\"" }
+literal_string_char_escape_quote_single = ${ "\\" ~ literal_string_char_quote_single }
+literal_string_char_escape_quote_double = ${ "\\" ~ literal_string_char_quote_double }
+literal_string_quoted_single = ${ "'" ~ ( interpolation| literal_string_escape | literal_string_char_unit | literal_string_char_quote_double | literal_string_char_escape_quote_single | literal_string_char_escape_quote_double )* ~  "'"}
+literal_string_quoted_double = ${ "\"" ~ ( interpolation | literal_string_escape | literal_string_char_unit | literal_string_char_quote_single | literal_string_char_escape_quote_single | literal_string_char_escape_quote_double )* ~  "\""}
+literal_string_quoted = ${ literal_string_quoted_single | literal_string_quoted_double }
+
+
+// universal_statement_variable
+universal_statement_variable = @{ "$" ~ ASCII_ALPHA ~ ( "-" | "_" | ASCII_ALPHANUMERIC )? }
+
+// interpolation
+interpolation = ${ "#{" ~ universal_statement_variable ~ "}" }
