@@ -39,6 +39,7 @@ fn test_literal_string_quoted() {
   assert!(ScssParser::parse(Rule::literal_string_quoted, "'abcde\\''").is_ok());
   assert!(ScssParser::parse(Rule::literal_string_quoted, "'abced#{$a}aaaaaa'").is_ok());
   assert!(ScssParser::parse(Rule::literal_string_quoted, "'#{$a}aaabbbccc'").is_ok());
+  assert!(ScssParser::parse(Rule::literal_string_quoted, "'\\1F46D'").is_ok());
 }
 
 #[test]
@@ -85,4 +86,7 @@ fn test_literal_string() {
   assert!(ScssParser::parse(Rule::literal_string, "--123").is_ok());
   assert!(ScssParser::parse(Rule::literal_string, "ms").is_ok());
   assert!(ScssParser::parse(Rule::literal_string, "-#{$prefix}-flex").is_ok());
+  assert!(ScssParser::parse(Rule::literal_string, "\\1F46D").is_ok());
+  assert!(ScssParser::parse(Rule::literal_string, "\\21").is_ok());
+  assert!(ScssParser::parse(Rule::literal_string, "\\7Fx").is_ok());
 }

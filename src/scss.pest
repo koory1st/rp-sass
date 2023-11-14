@@ -34,7 +34,7 @@ literal_string_char_escape_quote_double = ${ "\\" ~ literal_string_char_quote_do
 literal_string_quoted_single = ${ "'" ~ ( interpolation| literal_string_escape | literal_string_char_unit | literal_string_char_quote_double | literal_string_char_escape_quote_single | literal_string_char_escape_quote_double )* ~  "'"}
 literal_string_quoted_double = ${ "\"" ~ ( interpolation | literal_string_escape | literal_string_char_unit | literal_string_char_quote_single | literal_string_char_escape_quote_single | literal_string_char_escape_quote_double )* ~  "\""}
 literal_string_quoted = ${ literal_string_quoted_single | literal_string_quoted_double }
-literal_string_unquoted = ${("-"? ~ (ASCII_ALPHA | interpolation | "_")+ | "--") ~ (ASCII_ALPHANUMERIC | interpolation | "_" | "-")*}
+literal_string_unquoted = ${("-"? ~ (ASCII_ALPHA | interpolation | "_" | literal_string_escape_unicode)+ | "--") ~ (ASCII_ALPHANUMERIC | interpolation | "_" | "-" | literal_string_escape_unicode)*}
 literal_string = ${ literal_string_quoted | literal_string_unquoted }
 
 
