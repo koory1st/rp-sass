@@ -1,6 +1,7 @@
 // ASCII_HEX_DIGIT: '0'..'9' | 'a'..'f' | 'A'..'F'
 // ASCII_ALPHA_LOWER: 'a'..'z'
 // ASCII_ALPHA: 'a'..'z' | 'A'..'Z'
+// ASCII_DIGIT: '0'..'9'
 // ASCII_ALPHANUMERIC: ASCII_DIGIT | ASCII_ALPHA
 
 WHITESPACE = _{ " " | "\t" | "\r" | "\n" }
@@ -9,14 +10,16 @@ WHITESPACE = _{ " " | "\t" | "\r" | "\n" }
 literal_unit_length = @{"px" | "in"}
 literal_unit_period = @{"s"}
 literal_unit = @{ literal_unit_length | literal_unit_period }
-literal_number_minus_sign = @{"-"}
-literal_number_integer = @{literal_number_minus_sign? ~ ASCII_DIGIT+}
+literal_number_sign = @{"-" | "+"}
+literal_number_integer = @{literal_number_sign? ~ ASCII_DIGIT+}
 literal_number_decimal_no_int = @{"." ~ ASCII_DIGIT+}
-literal_number_decimal = ${ literal_number_minus_sign? ~ (ASCII_DIGIT+ ~ "." ~ ASCII_DIGIT+ | literal_number_decimal_no_int) }
+literal_number_decimal = ${ literal_number_sign? ~ (ASCII_DIGIT+ ~ "." ~ ASCII_DIGIT+ | literal_number_decimal_no_int) }
 literal_number_scientific = ${ literal_number_decimal ~ "e" ~ literal_number_integer }
 literal_number_no_unit = ${literal_number_decimal | literal_number_integer | literal_number_scientific }
 literal_number_with_unit = ${literal_number_no_unit ~ literal_unit}
+literal_number_percentage = ${literal_number_no_unit ~ "%"}
 literal_number = ${ literal_number_with_unit | literal_number_no_unit}
+
 
 // literal boolean
 literal_boolean = @{ "true" | "false" }
@@ -37,9 +40,30 @@ literal_string_quoted = ${ literal_string_quoted_single | literal_string_quoted_
 literal_string_unquoted = ${("-"? ~ (ASCII_ALPHA | interpolation | "_" | literal_string_escape_unicode)+ | "--") ~ (ASCII_ALPHANUMERIC | interpolation | "_" | "-" | literal_string_escape_unicode)*}
 literal_string = ${ literal_string_quoted | literal_string_unquoted }
 
+literal_alpha_value = @{ literal_number_no_unit | literal_number_percentage}
+
+// literal colors
+// https://developer.mozilla.org/en-US/docs/Web/CSS/named-color
+literal_color_named = @{ "black" | "silver" | "gray" | "white" }
+literal_color_hexadecimal = @{ "#" ~ (ASCII_HEX_DIGIT{3} | ASCII_HEX_DIGIT{4} | ASCII_HEX_DIGIT{6} | ASCII_HEX_DIGIT{8}) }
+// literal_color_rgb_3_number = @{ ASCII_DIGIT{1, 3} ~ " "+ ~ ASCII_DIGIT{1, 3} ~ " "+ ~ ASCII_DIGIT{1, 3} }
+// literal_color_rgb_with_percent = @{ literal_color_rgb_3_number ~ " "+ ~ "/" ~ " "+ ~ literal_alpha_value }
+// literal_color_rgb = @{ "rgb(" ~ (literal_color_rgb_with_percent | literal_color_rgb_3_number) ~ ")" }
+// literal_color_light_color = @{ "light-dark(" ~ (literal_color_named | literal_color_rgb) ~ " "* ~ "," ~ " "* ~ (literal_color_named | literal_color_rgb) ~ ")"}
+// literal_color = @{ literal_color_named | literal_color_hexadecimal | literal_color_rgb | literal_color_light_color }
+literal_new_color = { literal_new_color_absolute_color_base }
+literal_new_color_absolute_color_base = { literal_color_hexadecimal | literal_color_absolute_color_function | literal_color_named }
+literal_color_absolute_color_function = {literal_new_color_rgb}
+literal_new_color_rgb = { literal_color_legacy_rgb_syntax | literal_color_modern_rgb_syntax }
+literal_color_legacy_rgb_syntax = {"rgb(" ~ ((literal_number_percentage | literal_number_no_unit) ~ ","){2} ~ (literal_number_percentage | literal_number_no_unit) ~ ("," ~ literal_alpha_value)? }
+literal_color_modern_rgb_syntax = { "rgb(" ~ (literal_number_percentage | literal_number_no_unit | "none"){3} ~ ("/" ~ (literal_alpha_value | "none"))? }
 
 // universal_statement_variable
 universal_statement_variable = @{ "$" ~ ASCII_ALPHA ~ ( "-" | "_" | ASCII_ALPHANUMERIC )* }
 
 // interpolation
 interpolation = ${ "#{" ~ universal_statement_variable ~ "}" }
+
+
+
+// other expressions (oe)

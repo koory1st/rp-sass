@@ -20,6 +20,15 @@ fn test_literal_number() {
   assert!(ScssParser::parse(Rule::literal_number, "-2.1px").is_ok());
   assert!(ScssParser::parse(Rule::literal_number, "-2.1e10").is_ok());
   assert!(ScssParser::parse(Rule::literal_number, "-2.1e10s").is_ok());
+  assert!(ScssParser::parse(Rule::literal_number_no_unit, "12").is_ok());
+  assert!(ScssParser::parse(Rule::literal_number_no_unit, "4.01").is_ok());
+  assert!(ScssParser::parse(Rule::literal_number_no_unit, "-456.8").is_ok());
+  assert!(ScssParser::parse(Rule::literal_number_no_unit, "0.0").is_ok());
+  assert!(ScssParser::parse(Rule::literal_number_no_unit, "+0.0").is_ok());
+  assert!(ScssParser::parse(Rule::literal_number_no_unit, "-0.0").is_ok());
+  assert!(ScssParser::parse(Rule::literal_number_no_unit, ".60").is_ok());
+  assert!(ScssParser::parse(Rule::literal_number_no_unit, "10e3").is_ok());
+  assert!(ScssParser::parse(Rule::literal_number_no_unit, "-3.4e-2").is_ok());
 }
 
 
@@ -89,4 +98,24 @@ fn test_literal_string() {
   assert!(ScssParser::parse(Rule::literal_string, "\\1F46D").is_ok());
   assert!(ScssParser::parse(Rule::literal_string, "\\21").is_ok());
   assert!(ScssParser::parse(Rule::literal_string, "\\7Fx").is_ok());
+}
+
+#[test]
+fn test_literal_color() {
+  assert!(ScssParser::parse(Rule::literal_new_color, "").is_err());
+  // assert!(ScssParser::parse(Rule::literal_color, "rebeccapurple").is_ok());
+  // assert!(ScssParser::parse(Rule::literal_color, "aliceblue").is_ok());
+  // assert!(ScssParser::parse(Rule::literal_color, "#f09").is_ok());
+  // assert!(ScssParser::parse(Rule::literal_color, "#ff0099").is_ok());
+  // assert!(ScssParser::parse(Rule::literal_color, "rgb(255 0 153)").is_ok());
+  // assert!(ScssParser::parse(Rule::literal_color, "rgb(255 0 153 / 180%)").is_ok());
+  // assert!(ScssParser::parse(Rule::literal_color, "light-dark(white, black)").is_ok());
+  // assert!(ScssParser::parse(Rule::literal_color, "light-dark(rgb(255 255 255), rgb(0 0 0))").is_ok());
+  assert!(ScssParser::parse(Rule::literal_new_color, "rgb(255, 0, 153)").is_ok());
+  assert!(ScssParser::parse(Rule::literal_new_color, "rgb(255 0 153 10%)").is_ok());
+  assert!(ScssParser::parse(Rule::literal_new_color, "rgb(255 0 153 10%)").is_ok());
+  assert!(ScssParser::parse(Rule::literal_new_color, "rgb(255 0 153)").is_ok());
+  assert!(ScssParser::parse(Rule::literal_new_color, "rgb(none none none none)").is_ok());
+  assert!(ScssParser::parse(Rule::literal_new_color, "rgb(none none none)").is_ok());
+  assert!(ScssParser::parse(Rule::literal_new_color, "rgb(10% 10% 10% 10%)").is_ok());
 }
