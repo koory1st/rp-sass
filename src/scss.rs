@@ -103,8 +103,8 @@ fn test_literal_string() {
 #[test]
 fn test_literal_color() {
   assert!(ScssParser::parse(Rule::literal_new_color, "").is_err());
+  assert!(ScssParser::parse(Rule::literal_new_color, "aliceblue").is_ok());
   // assert!(ScssParser::parse(Rule::literal_color, "rebeccapurple").is_ok());
-  // assert!(ScssParser::parse(Rule::literal_color, "aliceblue").is_ok());
   // assert!(ScssParser::parse(Rule::literal_color, "#f09").is_ok());
   // assert!(ScssParser::parse(Rule::literal_color, "#ff0099").is_ok());
   // assert!(ScssParser::parse(Rule::literal_color, "rgb(255 0 153)").is_ok());
