@@ -47,7 +47,9 @@ literal_alpha_value = @{ literal_number_no_unit | literal_number_percentage}
 literal_color_named_basic = @{"black"|"silver"|"gray"|"white"|"maroon"|"red"|"purple"|"fuchsia"|"green"|"lime"|"olive"|"yellow"|"navy"|"blue"|"teal"|"aqua"}
 literal_color_named_addition = @{"aliceblue"|"antiquewhite"|"aqua"|"aquamarine"|"azure"|"beige"|"bisque"|"black"|"blanchedalmond"|"blue"|"blueviolet"|"brown"|"burlywood"|
 "cadetblue"|"chartreuse"|"chocolate"|"coral"|"cornflowerblue"|"cornsilk"|"crimson"|"cyan"|
-"darkblue"|"darkcyan"|"darkgoldenrod"|"darkgray"|"darkgreen"|"darkgrey"|"darkkhaki"|"darkmagenta"|"darkolivegreen"|"darkorange"|"darkorchid"|"darkred"|"darksalmon"|"darkseagreen"|"darkslateblue"|"darkslategray"|"darkslategrey"|"darkturquoise"|"darkviolet"|"deeppink"|"deepskyblue"|"dimgray"|"dimgrey"|"dodgerblue"|"firebrick"}
+"darkblue"|"darkcyan"|"darkgoldenrod"|"darkgray"|"darkgreen"|"darkgrey"|"darkkhaki"|"darkmagenta"|"darkolivegreen"|"darkorange"|"darkorchid"|"darkred"|"darksalmon"|"darkseagreen"|"darkslateblue"|"darkslategray"|"darkslategrey"|"darkturquoise"|"darkviolet"|"deeppink"|"deepskyblue"|"dimgray"|"dimgrey"|"dodgerblue"|
+"firebrick"|"floralwhite"|"forestgreen"|"fuchsia"|
+"gainsboro"|"ghostwhite"|"gold"|"goldenrod"|"gray"|"green"|"greenyellow"|"grey"}
 literal_color_named = @{literal_color_named_basic | literal_color_named_addition}
 literal_color_hexadecimal = @{ "#" ~ (ASCII_HEX_DIGIT{3} | ASCII_HEX_DIGIT{4} | ASCII_HEX_DIGIT{6} | ASCII_HEX_DIGIT{8}) }
 // literal_color_rgb_3_number = @{ ASCII_DIGIT{1, 3} ~ " "+ ~ ASCII_DIGIT{1, 3} ~ " "+ ~ ASCII_DIGIT{1, 3} }
