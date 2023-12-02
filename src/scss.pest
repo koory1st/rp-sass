@@ -9,6 +9,7 @@ WHITESPACE = _{ " " | "\t" | "\r" | "\n" }
 // literal number
 literal_unit_length = @{"px" | "in"}
 literal_unit_period = @{"s"}
+literal_unit_angle = @{"deg"|"grad"|"rad"|"turn"}
 literal_unit = @{ literal_unit_length | literal_unit_period }
 literal_number_sign = @{"-" | "+"}
 literal_number_integer = @{literal_number_sign? ~ ASCII_DIGIT+}
@@ -18,6 +19,7 @@ literal_number_scientific = ${ literal_number_decimal ~ "e" ~ literal_number_int
 literal_number_no_unit = ${literal_number_decimal | literal_number_integer | literal_number_scientific }
 literal_number_with_unit = ${literal_number_no_unit ~ literal_unit}
 literal_number_percentage = ${literal_number_no_unit ~ "%"}
+literal_number_angle = ${literal_number_no_unit ~ literal_unit_angle}
 literal_number = ${ literal_number_with_unit | literal_number_no_unit}
 
 
@@ -40,7 +42,7 @@ literal_string_quoted = ${ literal_string_quoted_single | literal_string_quoted_
 literal_string_unquoted = ${("-"? ~ (ASCII_ALPHA | interpolation | "_" | literal_string_escape_unicode)+ | "--") ~ (ASCII_ALPHANUMERIC | interpolation | "_" | "-" | literal_string_escape_unicode)*}
 literal_string = ${ literal_string_quoted | literal_string_unquoted }
 
-literal_alpha_value = @{ literal_number_no_unit | literal_number_percentage}
+literal_alpha_value = @{ literal_number_percentage | literal_number_no_unit }
 
 // literal colors
 // https://developer.mozilla.org/en-US/docs/Web/CSS/named-color
@@ -49,7 +51,13 @@ literal_color_named_addition = @{"aliceblue"|"antiquewhite"|"aqua"|"aquamarine"|
 "cadetblue"|"chartreuse"|"chocolate"|"coral"|"cornflowerblue"|"cornsilk"|"crimson"|"cyan"|
 "darkblue"|"darkcyan"|"darkgoldenrod"|"darkgray"|"darkgreen"|"darkgrey"|"darkkhaki"|"darkmagenta"|"darkolivegreen"|"darkorange"|"darkorchid"|"darkred"|"darksalmon"|"darkseagreen"|"darkslateblue"|"darkslategray"|"darkslategrey"|"darkturquoise"|"darkviolet"|"deeppink"|"deepskyblue"|"dimgray"|"dimgrey"|"dodgerblue"|
 "firebrick"|"floralwhite"|"forestgreen"|"fuchsia"|
-"gainsboro"|"ghostwhite"|"gold"|"goldenrod"|"gray"|"green"|"greenyellow"|"grey"}
+"gainsboro"|"ghostwhite"|"gold"|"goldenrod"|"gray"|"green"|"greenyellow"|"grey"|
+"honeydew"|"hotpink"|"indianred"|"indigo"|"ivory"|"khaki"|
+"lavender"|"lavenderblush"|"lawngreen"|"lemonchiffon"|"lightblue"|"lightcoral"|"lightcyan"|"lightgoldenrodyellow"|"lightgray"|"lightgreen"|"lightgrey"|"lightpink"|"lightsalmon"|"lightseagreen"|"lightskyblue"|"lightslategray"|"lightslategrey"|"lightsteelblue"|"lightyellow"|"lime"|"limegreen"|"linen"|
+"magenta"|"maroon"|"mediumaquamarine"|"mediumblue"|"mediumorchid"|"mediumpurple"|"mediumseagreen"|"mediumslateblue"|"mediumspringgreen"|"mediumturquoise"|"mediumvioletred"|"midnightblue"|"mintcream"|"mistyrose"|"moccasin"|
+"navajowhite"|"navy"|"oldlace"|"olive"|"olivedrab"|"orange"|"orangered"|"orchid"|"palegoldenrod"|"palegreen"|"paleturquoise"|"palevioletred"|"papayawhip"|"peachpuff"|"peru"|"pink"|"plum"|"powderblue"|"purple"|
+"rebeccapurple"|"red"|"rosybrown"|"royalblue"|"saddlebrown"|"salmon"|"sandybrown"|"seagreen"|"seashell"|"sienna"|"silver"|"skyblue"|"slateblue"|"slategray"|"slategrey"|"snow"|"springgreen"|"steelblue"
+|"tan"|"teal"|"thistle"|"tomato"|"transparent"|"turquoise"|"violet"|"wheat"|"white"|"whitesmoke"|"yellow"|"yellowgreen"}
 literal_color_named = @{literal_color_named_basic | literal_color_named_addition}
 literal_color_hexadecimal = @{ "#" ~ (ASCII_HEX_DIGIT{3} | ASCII_HEX_DIGIT{4} | ASCII_HEX_DIGIT{6} | ASCII_HEX_DIGIT{8}) }
 // literal_color_rgb_3_number = @{ ASCII_DIGIT{1, 3} ~ " "+ ~ ASCII_DIGIT{1, 3} ~ " "+ ~ ASCII_DIGIT{1, 3} }
@@ -57,12 +65,19 @@ literal_color_hexadecimal = @{ "#" ~ (ASCII_HEX_DIGIT{3} | ASCII_HEX_DIGIT{4} | 
 // literal_color_rgb = @{ "rgb(" ~ (literal_color_rgb_with_percent | literal_color_rgb_3_number) ~ ")" }
 // literal_color_light_color = @{ "light-dark(" ~ (literal_color_named | literal_color_rgb) ~ " "* ~ "," ~ " "* ~ (literal_color_named | literal_color_rgb) ~ ")"}
 // literal_color = @{ literal_color_named | literal_color_hexadecimal | literal_color_rgb | literal_color_light_color }
-literal_new_color = { literal_new_color_absolute_color_base }
-literal_new_color_absolute_color_base = { literal_color_hexadecimal | literal_color_absolute_color_function | literal_color_named }
-literal_color_absolute_color_function = {literal_new_color_rgb}
-literal_new_color_rgb = { literal_color_legacy_rgb_syntax | literal_color_modern_rgb_syntax }
+literal_color = { literal_color_absolute_color_base }
+literal_color_absolute_color_base = { literal_color_hexadecimal | literal_color_absolute_color_function | literal_color_named }
+literal_color_absolute_color_function = {literal_color_rgb|literal_color_rgba|literal_color_hls}
+literal_color_rgb = { literal_color_legacy_rgb_syntax | literal_color_modern_rgb_syntax }
+literal_color_rgba = { literal_color_legacy_rgba_syntax | literal_color_modern_rgba_syntax }
 literal_color_legacy_rgb_syntax = {"rgb(" ~ ((literal_number_percentage | literal_number_no_unit) ~ ","){2} ~ (literal_number_percentage | literal_number_no_unit) ~ ("," ~ literal_alpha_value)? }
+literal_color_legacy_rgba_syntax = {"rgba(" ~ ((literal_number_percentage | literal_number_no_unit) ~ ","){2} ~ (literal_number_percentage | literal_number_no_unit) ~ ("," ~ literal_alpha_value)? }
 literal_color_modern_rgb_syntax = { "rgb(" ~ (literal_number_percentage | literal_number_no_unit | "none"){3} ~ ("/" ~ (literal_alpha_value | "none"))? }
+literal_color_modern_rgba_syntax = { "rgba(" ~ (literal_number_percentage | literal_number_no_unit | "none"){3} ~ ("/" ~ (literal_alpha_value | "none"))? }
+literal_color_hls = {literal_color_legacy_hsl_syntax | literal_color_modern_hsl_syntax}
+literal_color_legacy_hsl_syntax = {"hsl(" ~ literal_color_hue ~ ("," ~ literal_number_percentage){2} ~ ("," ~ literal_alpha_value)? ~ ")"}
+literal_color_hue = {literal_number_no_unit | literal_number_angle}
+literal_color_modern_hsl_syntax = {"hsl(" ~ (literal_color_hue | "none") ~ (literal_number_percentage | literal_number_no_unit | "none"){2} ~ ("/" ~ (literal_alpha_value | "none"))? ~ ")"}
 
 // universal_statement_variable
 universal_statement_variable = @{ "$" ~ ASCII_ALPHA ~ ( "-" | "_" | ASCII_ALPHANUMERIC )* }
