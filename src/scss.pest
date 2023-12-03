@@ -75,9 +75,9 @@ literal_color_legacy_rgba_syntax = {"rgba(" ~ ((literal_number_percentage | lite
 literal_color_modern_rgb_syntax = { "rgb(" ~ (literal_number_percentage | literal_number_no_unit | "none"){3} ~ ("/" ~ (literal_alpha_value | "none"))? }
 literal_color_modern_rgba_syntax = { "rgba(" ~ (literal_number_percentage | literal_number_no_unit | "none"){3} ~ ("/" ~ (literal_alpha_value | "none"))? }
 literal_color_hls = {literal_color_legacy_hsl_syntax | literal_color_modern_hsl_syntax}
-literal_color_legacy_hsl_syntax = {"hsl(" ~ literal_color_hue ~ ("," ~ literal_number_percentage){2} ~ ("," ~ literal_alpha_value)? ~ ")"}
+literal_color_legacy_hsl_syntax = {("hsl(" | "hsla(") ~ literal_color_hue ~ ("," ~ literal_number_percentage){2} ~ ("," ~ literal_alpha_value)? ~ ")"}
 literal_color_hue = {literal_number_no_unit | literal_number_angle}
-literal_color_modern_hsl_syntax = {"hsl(" ~ (literal_color_hue | "none") ~ (literal_number_percentage | literal_number_no_unit | "none"){2} ~ ("/" ~ (literal_alpha_value | "none"))? ~ ")"}
+literal_color_modern_hsl_syntax = {("hsl(" | "hsla(" | "hwb(") ~ (literal_color_hue | "none") ~ (literal_number_percentage | literal_number_no_unit | "none"){0, 2} ~ ("/" ~ (literal_alpha_value | "none"))? ~ ")"}
 
 // universal_statement_variable
 universal_statement_variable = @{ "$" ~ ASCII_ALPHA ~ ( "-" | "_" | ASCII_ALPHANUMERIC )* }

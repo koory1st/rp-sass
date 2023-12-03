@@ -127,4 +127,8 @@ fn test_literal_color() {
   assert!(ScssParser::parse(Rule::literal_color, "rgba(10% 10% 10% 10%)").is_ok());
   assert!(ScssParser::parse(Rule::literal_color, "hsl(10,100%,50%,10%)").is_ok());
   assert!(ScssParser::parse(Rule::literal_color, "hsl(150 30% 60% / 0.8)").is_ok());
+  assert!(ScssParser::parse(Rule::literal_color, "hsla(10,100%,50%,10%)").is_ok());
+  assert!(ScssParser::parse(Rule::literal_color, "hsla(150 30% 60% / 0.8)").is_ok());
+  assert!(ScssParser::parse(Rule::literal_color, "hwb(12 50% 0%)").is_ok());
+  assert!(ScssParser::parse(Rule::literal_color, "hwb(194 0% 0% / 0.5)").is_ok());
 }
